@@ -480,6 +480,33 @@ loadConfig()
           <input type="number" v-model.number="config.LATE_JOIN_VOTE_COOLDOWN_SECONDS" min="0" max="600" step="1" class="setting-input setting-input-sm" />
         </div>
       </div>
+      
+      <!-- Host Lock -->
+      <div class="admin-card card">
+        <h2 class="card-title">Host Lock</h2>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <span>Enable Host Lock</span>
+
+            <span class="setting-hint">
+              When enabled, only the host may browse the Emby library,
+              select media and start playback.
+              <br /><br />
+              Participants become passive viewers and wait for the host
+              to control the session.
+              <br /><br />
+              This setting only controls availability. Existing parties
+              are unaffected until they are recreated.
+            </span>
+          </div>
+
+          <ToggleSwitch
+            v-model="config.HOST_LOCK_ENABLED"
+          />
+        </div>
+      </div>
+      
     </div>
 
     <div class="admin-panel-footer">

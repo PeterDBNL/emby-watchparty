@@ -1,3 +1,5 @@
+This fork was created to introduce Host Controls, which would block Guests from controling certain aspects; like no library access, no play/pause, but all the host to control these.
+
 # Emby Watch Party
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

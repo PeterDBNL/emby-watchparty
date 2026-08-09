@@ -490,19 +490,82 @@ loadConfig()
             <span>Enable Host Lock</span>
 
             <span class="setting-hint">
-              When enabled, only the host may browse the Emby library,
-              select media and start playback.
+              When enabled, the host controls which actions guests may perform.
               <br /><br />
-              Participants become passive viewers and wait for the host
-              to control the session.
-              <br /><br />
-              This setting only controls availability. Existing parties
-              are unaffected until they are recreated.
+              Existing parties are unaffected until they are recreated.
             </span>
           </div>
 
           <ToggleSwitch
             v-model="config.HOST_LOCK_ENABLED"
+          />
+        </div>
+
+        <hr class="settings-divider" />
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <span>Allow guests to browse library</span>
+          </div>
+
+          <ToggleSwitch
+            v-model="config.HOST_LOCK_ALLOW_GUEST_BROWSE_LIBRARY"
+            :disabled="!config.HOST_LOCK_ENABLED"
+          />
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <span>Allow guests media playback</span>
+          </div>
+
+          <ToggleSwitch
+            v-model="config.HOST_LOCK_ALLOW_GUEST_MEDIA_PLAYBACK"
+            :disabled="!config.HOST_LOCK_ENABLED"
+          />
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <span>Allow guests subtitles</span>
+          </div>
+
+          <ToggleSwitch
+            v-model="config.HOST_LOCK_ALLOW_GUEST_SUBTITLES"
+            :disabled="!config.HOST_LOCK_ENABLED"
+          />
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <span>Allow guests audio</span>
+          </div>
+
+          <ToggleSwitch
+            v-model="config.HOST_LOCK_ALLOW_GUEST_AUDIO"
+            :disabled="!config.HOST_LOCK_ENABLED"
+          />
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <span>Allow guests video quality</span>
+          </div>
+
+          <ToggleSwitch
+            v-model="config.HOST_LOCK_ALLOW_GUEST_VIDEO_QUALITY"
+            :disabled="!config.HOST_LOCK_ENABLED"
+          />
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <span>Allow guests social features</span>
+          </div>
+
+          <ToggleSwitch
+            v-model="config.HOST_LOCK_ALLOW_GUEST_SOCIAL"
+            :disabled="!config.HOST_LOCK_ENABLED"
           />
         </div>
       </div>

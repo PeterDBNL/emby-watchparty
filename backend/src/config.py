@@ -72,7 +72,15 @@ class RuntimeConfig:
     BINGE_WATCH_ENABLED: bool = False
 
 
-    HOST_LOCK_ENABLED: bool = False 
+    HOST_LOCK_ENABLED: bool = False
+
+    # Host Lock permissions
+    HOST_LOCK_ALLOW_GUEST_BROWSE_LIBRARY: bool = False
+    HOST_LOCK_ALLOW_GUEST_MEDIA_PLAYBACK: bool = False
+    HOST_LOCK_ALLOW_GUEST_SUBTITLES: bool = False
+    HOST_LOCK_ALLOW_GUEST_AUDIO: bool = False
+    HOST_LOCK_ALLOW_GUEST_VIDEO_QUALITY: bool = False
+    HOST_LOCK_ALLOW_GUEST_SOCIAL: bool = False 
     # Countdown shown to the room before auto-advance fires. Any user can
     # hit Cancel during this window; selector wins, but any cancel stops
     # it (so a child grabbing the remote can stop the next episode just
@@ -319,7 +327,13 @@ class RuntimeConfig:
             'Auth': ['REQUIRE_LOGIN'],
             'Playback': ['FORCE_TRANSCODE', 'BINGE_WATCH_ENABLED', 'BINGE_WATCH_COUNTDOWN_SECONDS'],
             'Host Lock': [
-                'HOST_LOCK_ENABLED'
+                'HOST_LOCK_ENABLED',
+                'HOST_LOCK_ALLOW_GUEST_BROWSE_LIBRARY',
+                'HOST_LOCK_ALLOW_GUEST_MEDIA_PLAYBACK',
+                'HOST_LOCK_ALLOW_GUEST_SUBTITLES',
+                'HOST_LOCK_ALLOW_GUEST_AUDIO',
+                'HOST_LOCK_ALLOW_GUEST_VIDEO_QUALITY',
+                'HOST_LOCK_ALLOW_GUEST_SOCIAL',
             ],
             'Quality': ['ENABLED_QUALITY_OPTIONS'],
             'Logging': ['LOG_LEVEL', 'LOG_TO_FILE', 'LOG_FILE', 'LOG_FORMAT', 'LOG_MAX_SIZE', 'CONSOLE_LOG_LEVEL'],

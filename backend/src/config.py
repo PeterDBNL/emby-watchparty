@@ -71,6 +71,8 @@ class RuntimeConfig:
     # the button disappears and any pending auto-advance is cancelled.
     BINGE_WATCH_ENABLED: bool = False
 
+
+    HOST_LOCK_ENABLED: bool = False 
     # Countdown shown to the room before auto-advance fires. Any user can
     # hit Cancel during this window; selector wins, but any cancel stops
     # it (so a child grabbing the remote can stop the next episode just
@@ -196,7 +198,10 @@ class RuntimeConfig:
             except OSError:
                 pass
             tmp_name = tmp.name
-        os.replace(tmp_name, path)
+        import shutil
+
+        shutil.copy2(tmp_name, path)
+        os.remove(tmp_name)
 
     def to_dict(self) -> dict:
         return {f.name: getattr(self, f.name) for f in fields(self)}
@@ -313,6 +318,9 @@ class RuntimeConfig:
         sections = {
             'Auth': ['REQUIRE_LOGIN'],
             'Playback': ['FORCE_TRANSCODE', 'BINGE_WATCH_ENABLED', 'BINGE_WATCH_COUNTDOWN_SECONDS'],
+            'Host Lock': [
+                'HOST_LOCK_ENABLED'
+            ],
             'Quality': ['ENABLED_QUALITY_OPTIONS'],
             'Logging': ['LOG_LEVEL', 'LOG_TO_FILE', 'LOG_FILE', 'LOG_FORMAT', 'LOG_MAX_SIZE', 'CONSOLE_LOG_LEVEL'],
             'Security': ['MAX_USERS_PER_PARTY', 'ENABLE_HLS_TOKEN_VALIDATION', 'HLS_TOKEN_EXPIRY',

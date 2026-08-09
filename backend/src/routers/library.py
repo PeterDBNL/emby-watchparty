@@ -16,7 +16,7 @@ from backend.src.dependencies import (
     PartySession,
     get_emby_client,
     get_logger,
-    require_party_unlocked,
+    require_host_library_access,
 )
 from backend.src.schemas import (
     LibraryItemsResponse,
@@ -39,7 +39,7 @@ def _host_creds(party_session: PartySession) -> tuple[str, str]:
     responses=PARTY_UNLOCKED_RESPONSES,
 )
 def api_libraries(
-    party_session: PartySession = Depends(require_party_unlocked),
+    party_session: PartySession = Depends(require_host_library_access),
     emby_client=Depends(get_emby_client),
 ):
     access_token, user_id = _host_creds(party_session)
@@ -61,7 +61,7 @@ def api_items(
     recursive: bool = False,
     startIndex: Optional[int] = None,
     limit: Optional[int] = None,
-    party_session: PartySession = Depends(require_party_unlocked),
+    party_session: PartySession = Depends(require_host_library_access),
     emby_client=Depends(get_emby_client),
 ):
     access_token, user_id = _host_creds(party_session)
@@ -87,7 +87,7 @@ def api_items(
 )
 def api_search(
     q: str = Query(""),
-    party_session: PartySession = Depends(require_party_unlocked),
+    party_session: PartySession = Depends(require_host_library_access),
     emby_client=Depends(get_emby_client),
 ):
     if not q.strip():
@@ -106,7 +106,7 @@ def api_search(
 )
 def api_item_details(
     item_id: str,
-    party_session: PartySession = Depends(require_party_unlocked),
+    party_session: PartySession = Depends(require_host_library_access),
     emby_client=Depends(get_emby_client),
 ):
     access_token, user_id = _host_creds(party_session)
@@ -130,7 +130,7 @@ def api_item_details(
 def api_item_streams(
     item_id: str,
     media_source_id: Optional[str] = None,
-    party_session: PartySession = Depends(require_party_unlocked),
+    party_session: PartySession = Depends(require_host_library_access),
     emby_client=Depends(get_emby_client),
     logger=Depends(get_logger),
 ):

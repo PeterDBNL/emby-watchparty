@@ -125,6 +125,32 @@ def require_party_unlocked(
         raise HTTPException(status_code=423, detail="Party has no host")
     return party_session
 
+def require_host_library_access(
+    party_session: PartySession = Depends(require_party_unlocked),
+    config: Config = Depends(get_config),
+) -> PartySession:
+    """
+    Require the caller to be the current host when Host Lock is enabled.
+
+    When Host Lock is disabled, every party member may browse the library.
+    """
+
+    if not config.HOST_LOCK_ENABLED:
+        return party_session
+
+    party = party_session.party
+
+    if not _owns_host_identity(
+        party,
+        party_session.client_id,
+        party_session.host_session_grant,
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail="Host Lock enabled",
+        )
+
+    return party_session
 
 def require_host_token(
     party_session: PartySession = Depends(require_party_session),

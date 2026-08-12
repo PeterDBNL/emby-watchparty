@@ -105,6 +105,18 @@ export const usePartyStore = defineStore('party', () => {
     available: false, active: false,
   })
 
+  // Host Lock state. Sent by the backend in sync_state.
+  // This represents the current permissions for guests.
+  const hostLock = ref({
+    enabled: false,
+    allowGuestBrowseLibrary: false,
+    allowGuestMediaPlayback: false,
+    allowGuestSubtitles: false,
+    allowGuestAudio: false,
+    allowGuestVideoQuality: false,
+    allowGuestSocial: false,
+  })
+
   // Pending auto-advance modal state. Non-null only between video_ended
   // and the next video_selected / video_stopped, while the countdown
   // is running. timeoutAt is the absolute deadline (ms since epoch);
@@ -375,6 +387,19 @@ export const usePartyStore = defineStore('party', () => {
           active: !!data.binge_watch.active,
         }
       }
+
+      if (data.host_lock) {
+        hostLock.value = {
+          enabled: !!data.host_lock.enabled,
+          allowGuestBrowseLibrary: !!data.host_lock.allow_guest_browse_library,
+          allowGuestMediaPlayback: !!data.host_lock.allow_guest_media_playback,
+          allowGuestSubtitles: !!data.host_lock.allow_guest_subtitles,
+          allowGuestAudio: !!data.host_lock.allow_guest_audio,
+          allowGuestVideoQuality: !!data.host_lock.allow_guest_video_quality,
+          allowGuestSocial: !!data.host_lock.allow_guest_social,
+        }
+      }
+
       // Hydrate a running binge countdown so a rejoiner during the
       // countdown window sees the modal (and Cancel button). Without
       // this, the watchdog fires unattended and the selector loses
@@ -616,9 +641,13 @@ export const usePartyStore = defineStore('party', () => {
   }
 
   function cancelAutoAdvance() {
-    const socket = useSocketStore()
-    if (!partyId.value || !pendingAutoAdvance.value) return
-    socket.emit('auto_advance_cancel', { party_id: partyId.value })
+      const socket = useSocketStore()
+
+      if (!partyId.value || !pendingAutoAdvance.value) return
+
+      socket.emit('auto_advance_cancel', {
+          party_id: partyId.value,
+      })
   }
 
   return {
@@ -628,6 +657,6 @@ export const usePartyStore = defineStore('party', () => {
     bingeWatch, pendingAutoAdvance,
     sessionError, sessionRetrying, supersededBy,
     join, leave, setupListeners, submitVote, retrySession,
-    setBingeWatchActive, cancelAutoAdvance,
+    setBingeWatchActive, cancelAutoAdvance,hostLock,
   }
 })

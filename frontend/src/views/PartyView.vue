@@ -113,6 +113,17 @@ const awaitingAutoJoin = ref(!!localStorage.getItem(STORAGE_KEY))
 const chatMessages = ref<Array<{ username: string; message: string; timestamp: string; system?: boolean }>>([])
 const chatInput = ref('')
 const showLibrary = ref(false)
+import { computed } from 'vue'
+
+const canBrowseLibrary = computed(() => {
+    if (!party.hostLock.enabled)
+        return true
+
+    if (auth.isHost)
+        return true
+
+    return party.hostLock.allowGuestBrowseLibrary
+})
 const copyLabel = ref('Copy')
 const showVersionModal = ref(false)
 const showParticipants = ref(false)
@@ -1190,8 +1201,8 @@ function stopVideo() {
 // library open automatically so the next selection is one click away
 // instead of two ("Browse Library" -> pick item).
 watch(() => party.currentVideo, (newVal, oldVal) => {
-  if (oldVal && !newVal) {
-    showLibrary.value = true
+  if (oldVal && !newVal && canBrowseLibrary.value) {
+      showLibrary.value = true
   }
   // Close the library for EVERY client when a video becomes active, not
   // just the selector. emitSelectVideo() only hides it locally on the
@@ -1521,11 +1532,12 @@ async function submitBecomeHost(payload: { username: string; password: string })
             <span v-if="party.userCount > 3" class="av av-more">+{{ party.userCount - 3 }}</span>
           </div>
         </div>
-        <button @click="libraryButtonAction" class="chip-btn">
-          <template v-if="auth.partyUnlocked">
+        <button
+          v-if="canBrowseLibrary"
+          @click="toggleLibrary"f
+          class="btn btn-primary"
+        >
             {{ showLibrary ? 'Hide Library' : 'Browse Library' }}
-          </template>
-          <template v-else>Login to Become Host</template>
         </button>
         <button v-if="party.currentVideo" @click="stopVideo" class="chip-btn chip-btn-warn">Stop Video</button>
         <button
@@ -1561,7 +1573,13 @@ async function submitBecomeHost(payload: { username: string; password: string })
           <template v-if="auth.partyUnlocked">
             <h2>No video selected</h2>
             <p>Browse the library and select a video to start watching together</p>
-            <button @click="toggleLibrary" class="btn btn-primary">Browse Library</button>
+            <button
+                v-if="canBrowseLibrary"
+                @click="toggleLibrary"
+                class="btn btn-primary"
+            >
+                Browse Library
+            </button>
           </template>
           <template v-else>
             <h2>Party is locked</h2>

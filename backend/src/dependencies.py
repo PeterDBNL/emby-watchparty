@@ -135,7 +135,10 @@ def require_host_library_access(
     When Host Lock is disabled, every party member may browse the library.
     """
 
-    if not config.HOST_LOCK_ENABLED:
+    if (
+        not config.HOST_LOCK_ENABLED
+        or config.HOST_LOCK_ALLOW_GUEST_BROWSE_LIBRARY
+    ):
         return party_session
 
     party = party_session.party

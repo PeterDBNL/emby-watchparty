@@ -716,6 +716,15 @@ def register(ctx):
                 "available": bool(config.BINGE_WATCH_ENABLED),
                 "active": bool(party.get("binge_watch_active")),
             },
+            "host_lock": {
+                "enabled": bool(config.HOST_LOCK_ENABLED),
+                "allow_guest_browse_library": bool(config.HOST_LOCK_ALLOW_GUEST_BROWSE_LIBRARY),
+                "allow_guest_media_playback": bool(config.HOST_LOCK_ALLOW_GUEST_MEDIA_PLAYBACK),
+                "allow_guest_subtitles": bool(config.HOST_LOCK_ALLOW_GUEST_SUBTITLES),
+                "allow_guest_audio": bool(config.HOST_LOCK_ALLOW_GUEST_AUDIO),
+                "allow_guest_video_quality": bool(config.HOST_LOCK_ALLOW_GUEST_VIDEO_QUALITY),
+                "allow_guest_social": bool(config.HOST_LOCK_ALLOW_GUEST_SOCIAL),
+            },
             "pending_auto_advance": pending_advance_payload,
         }, to=sid)
 

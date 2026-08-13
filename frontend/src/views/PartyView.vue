@@ -5,6 +5,7 @@ import { useSocketStore } from '@/stores/socket'
 import { usePartyStore, getClientId } from '@/stores/party'
 import VideoPlayer from '@/components/VideoPlayer.vue'
 import VideoControls from '@/components/VideoControls.vue'
+import { useHostLock } from '@/composables/useHostLock'
 
 // Async-loaded so they don't ship in the initial PartyView bundle.
 // LibraryBrowser pulls in the full library tree + thumbnail helpers,
@@ -61,6 +62,7 @@ const socket = useSocketStore()
 const party = usePartyStore()
 const auth = useAuthStore()
 const avatar = useAvatarStore()
+const hostLock = useHostLock()
 
 const showBecomeHostModal = ref(false)
 const becomeHostBusy = ref(false)
@@ -115,15 +117,7 @@ const chatInput = ref('')
 const showLibrary = ref(false)
 import { computed } from 'vue'
 
-const canBrowseLibrary = computed(() => {
-    if (!party.hostLock.enabled)
-        return true
-
-    if (auth.isHost)
-        return true
-
-    return party.hostLock.allowGuestBrowseLibrary
-})
+const canBrowseLibrary = hostLock.canBrowseLibrary
 const copyLabel = ref('Copy')
 const showVersionModal = ref(false)
 const showParticipants = ref(false)

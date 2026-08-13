@@ -125,8 +125,10 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { api } from '@/api/client'
 import { usePartyStore } from '@/stores/party'
+import { useHostLock } from '@/composables/useHostLock'
 
 const party = usePartyStore()
+const hostLock = useHostLock()
 // Drives the LIVE badge + EQ animation overlay on the currently-playing
 // card. Falls back to null when nothing is selected so the overlay never
 // renders accidentally on a stale match.
@@ -564,11 +566,19 @@ function clearSearch() {
 }
 
 async function handleItemClick(item: EmbyItem) {
+
+  // Movies, episodes, music, etc.
   if (playableTypes.has(item.Type)) {
+
+    // Host Lock: guests may browse but not select media.
+    if (!hostLock.canControlPlayback.value)
+      return
+
     emit('select-video', item)
     return
   }
 
+  // Folders, seasons, libraries, collections...
   if (browsableTypes.has(item.Type)) {
     bumpNavToken(`handleItemClick:${item.Type}:${item.Id}`)
     breadcrumbs.value.push({ id: item.Id, name: item.Name })

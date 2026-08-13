@@ -862,8 +862,14 @@ const resumePromptState = ref<{
 } | null>(null)
 
 function emitSelectVideo(item: any, mediaSourceId?: string, startSeconds = 0) {
-  if (!party.partyId) return
+  if (!hostLock.canControlPlayback.value)
+    return
+  
+  if (!party.partyId)
+    return
+  
   hasStarted = false
+  
   socket.emit('select_video', {
     party_id: party.partyId,
     item_id: item.Id,
@@ -1023,7 +1029,14 @@ function onVideoPlay() {
   lastPlayBroadcast = now
 
   wasPlayingBeforeSeek = true
-  socket.emit('play', { party_id: party.partyId, time: toMediaTime(ve.currentTime) })
+
+  if (!hostLock.canControlPlayback.value)
+      return
+
+  socket.emit('play', {
+      party_id: party.partyId,
+      time: toMediaTime(ve.currentTime)
+  })
   // Chat message comes from the server-broadcast handler (socket.on
   // 'play'), which fires for every client including the sender. This
   // is the single source of truth for play/pause/seek system
@@ -1068,7 +1081,12 @@ function onVideoPause() {
     lastPauseBroadcast = now
 
     wasPlayingBeforeSeek = false
-    socket.emit('pause', { party_id: party.partyId, time: toMediaTime(currentVideoEl.currentTime) })
+    wasPlayingBeforeSeek = false
+
+    if (!hostLock.canControlPlayback.value) {
+        currentVideoEl.play().catch(() => {})
+        return
+    }
     // Chat message handled by socket.on('pause') broadcast handler.
   }, 250)
 }

@@ -17,6 +17,7 @@ from backend.src.dependencies import (
     get_emby_client,
     get_logger,
     require_host_library_access,
+    require_stream_selection_access,
 )
 from backend.src.schemas import (
     LibraryItemsResponse,
@@ -130,7 +131,7 @@ def api_item_details(
 def api_item_streams(
     item_id: str,
     media_source_id: Optional[str] = None,
-    party_session: PartySession = Depends(require_host_library_access),
+    party_session: PartySession = Depends(require_stream_selection_access),
     emby_client=Depends(get_emby_client),
     logger=Depends(get_logger),
 ):

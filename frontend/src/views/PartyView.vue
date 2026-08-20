@@ -1087,6 +1087,11 @@ function onVideoPause() {
         currentVideoEl.play().catch(() => {})
         return
     }
+
+    socket.emit('pause', {
+        party_id: party.partyId,
+        time: toMediaTime(currentVideoEl.currentTime),
+    })
     // Chat message handled by socket.on('pause') broadcast handler.
   }, 250)
 }

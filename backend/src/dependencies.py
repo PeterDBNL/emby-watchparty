@@ -155,6 +155,42 @@ def require_host_library_access(
 
     return party_session
 
+def require_stream_selection_access(
+    party_session: PartySession = Depends(require_party_unlocked),
+    config: Config = Depends(get_config),
+) -> PartySession:
+    """
+    Allow access to the audio/subtitle stream list when at least one of
+    those guest features is enabled.
+
+    Host always has access.
+    """
+
+    if not config.HOST_LOCK_ENABLED:
+        return party_session
+
+    party = party_session.party
+
+    # Host always allowed
+    if _owns_host_identity(
+        party,
+        party_session.client_id,
+        party_session.host_session_grant,
+    ):
+        return party_session
+
+    # Guests only when at least one stream option is enabled
+    if (
+        config.HOST_LOCK_ALLOW_GUEST_AUDIO
+        or config.HOST_LOCK_ALLOW_GUEST_SUBTITLES
+    ):
+        return party_session
+
+    raise HTTPException(
+        status_code=403,
+        detail="Host Lock enabled",
+    )
+
 def require_host_token(
     party_session: PartySession = Depends(require_party_session),
     party_manager: PartyManager = Depends(get_party_manager),

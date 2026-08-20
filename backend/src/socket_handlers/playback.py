@@ -600,6 +600,32 @@ def register(ctx):
 
         if not party or not party.get("current_video"):
             return
+        
+        caller_client_id = _client_id_for_sid(party, sid)
+        is_host = (
+            caller_client_id
+            and caller_client_id == party.get("host_client_id")
+        )
+
+        if config.HOST_LOCK_ENABLED and not is_host:
+
+            if (
+                subtitle_index is not None
+                and not config.HOST_LOCK_ALLOW_GUEST_SUBTITLES
+            ):
+                return
+
+            if (
+                audio_index is not None
+                and not config.HOST_LOCK_ALLOW_GUEST_AUDIO
+            ):
+                return
+
+            if (
+                quality is not None
+                and not config.HOST_LOCK_ALLOW_GUEST_VIDEO_QUALITY
+            ):
+                return
 
         caller_client_id = _client_id_for_sid(party, sid)
         if party["current_video"].get("selected_by") != caller_client_id:
